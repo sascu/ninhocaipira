@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ninho Caipira - Menu Digital</title>
+  
+  <!-- Fontes e Ícones -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+  <style>
+    :root {
+      --primary: #1b4332; /* Verde escuro colonial */
+      --secondary: #2d6a4f;
+      --accent: #ffb703; /* Amarelo gema/ouro */
+      --bg: #f8f9fa;
+      --text-dark: #212529;
+      --text-muted: #6c757d;
+      --white: #ffffff;
+    }
+
+    body { 
+      background-color: var(--bg); 
+      font-family: 'Poppins', sans-serif; 
+      color: var(--text-dark);
+      padding-bottom: 60px;
+    }
+
+    /* Header Estilizado */
+    .app-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 40px 20px 60px;
+      text-align: center;
+      border-radius: 0 0 40px 40px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .app-header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 5px;
+    }
+
+    /* Barra de Busca Flutuante */
+    .search-container {
+      margin-top: -30px;
+      padding: 0 25px;
+      margin-bottom: 25px;
+    }
+    .search-wrapper {
+      position: relative;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .search-input {
+      border: none;
+      border-radius: 50px;
+      padding: 15px 25px 15px 50px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+    .search-input:focus {
+      outline: none;
+      box-shadow: 0 10px 25px rgba(27, 67, 50, 0.2);
+    }
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+    }
+
+    /* Categorias em Pílulas */
+    .category-nav {
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 5px 20px 20px;
+      gap: 10px;
+      scrollbar-width: none;
+    }
+    .category-nav::-webkit-scrollbar { display: none; }
+
+    .cat-btn {
+      padding: 10px 22px;
+      border-radius: 50px;
+      border: none;
+      background: var(--white);
+      color: var(--secondary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      transition: 0.3s;
+    }
+    .cat-btn.active {
+      background: var(--accent);
+      color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    /* Cards de Produto Estilo Restaurante */
+    .product-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 15px;
+      margin: 0 20px 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      transition: 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .product-card:active {
+      transform: scale(0.97);
+      background: #fdfdfd;
+    }
+
+    .product-img {
+      width: 70px;
+      height: 70px;
+      background: #f0f0f0;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--secondary);
+    }
+
+    .product-info { flex: 1; }
+    
+    .product-info small {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .product-info h3 {
+      font-size: 1.05rem;
+      margin: 2px 0 5px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .price-tag {
+      font-weight: 800;
+      color: var(--secondary);
+      font-size: 1.1rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 10px 25px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title::after {
+      content: "";
+      flex: 1;
+      height: 2px;
+      background: #e0e0e0;
+    }
+
+    /* WhatsApp Floating Button */
+    .btn-whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #25d366;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      z-index: 1000;
+      text-decoration: none;
+    }
+
+    #loader { text-align: center; padding: 100px 0; color: var(--primary); }
+  </style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1 class="mb-0">Ninho Caipira</h1>
+  <p class="mb-0" style="opacity: 0.9; font-weight: 300;">O sabor da roça na sua mesa</p>
+</div>
+
+<div class="search-container">
+  <div class="search-wrapper">
+    <i class="bi bi-search search-icon"></i>
+    <input type="text" id="filtro" class="search-input" placeholder="O que você procura hoje?" onkeyup="buscarGlobal()">
+  </div>
+</div>
+
+<div id="category-bar" class="category-nav">
+  <!-- Categorias via JS -->
+</div>
+
+<div id="loader">
+  <div class="spinner-border" role="status"></div>
+  <p class="mt-2">Carregando delícias...</p>
+</div>
+
+<div id="categoria-titulo" class="section-title"></div>
+<div id="lista-produtos"></div>
+
+<!-- Botão flutuante para contato direto -->
+<a href="https://wa.me/SEUNUMEROAQUI" class="btn-whatsapp" target="_blank">
+  <i class="bi bi-whatsapp"></i>
+</a>
+
+<script>
+  let dadosCompletos = [];
+  let categorias = [];
+  let categoriaAtual = "";
+  const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQdhEU_7Gcle7PCUi0RYGTffJ9Lu07YC71BMSqnoZChIWrZODHYenLZJvhnP-SxJ5mVNQBSrNFEhcMT/pub?output=csv';
+
+  async function carregarDados() {
+    try {
+      const response = await fetch(URL_PLANILHA);
+      const csv = await response.text();
+      
+      // Tratamento básico para evitar erros com vírgulas dentro de aspas
+      const linhas = csv.split('\n').slice(1);
+      dadosCompletos = linhas.map(linha => {
+        const col = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        return {
+          categoria: col[0]?.replace(/"/g, '').trim(),
+          nome: col[1]?.replace(/"/g, '').trim(),
+          preco: col[2]?.replace(/"/g, '').trim()
+        };
+      }).filter(i => i.nome);
+
+      categorias = [...new Set(dadosCompletos.map(i => i.categoria))];
+      
+      renderizarAbas();
+      if(categorias.length > 0) selecionarCategoria(categorias[0]);
+      
+      document.getElementById('loader').style.display = 'none';
+    } catch (err) {
+      document.getElementById('loader').innerHTML = "Erro ao carregar o cardápio. Verifique sua conexão.";
+    }
+  }
+
+  function renderizarAbas() {
+    const bar = document.getElementById('category-bar');
+    bar.innerHTML = categorias.map(cat => `
+      <button class="cat-btn" onclick="selecionarCategoria('${cat}')" id="btn-${cat}">
+        ${cat}
+      </button>
+    `).join('');
+  }
+
+  function selecionarCategoria(cat) {
+    categoriaAtual = cat;
+    document.getElementById('filtro').value = "";
+    
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    const btnAtivo = document.getElementById(`btn-${cat}`);
+    if(btnAtivo) btnAtivo.classList.add('active');
+    
+    document.getElementById('categoria-titulo').innerText = cat;
+    const filtrados = dadosCompletos.filter(i => i.categoria === cat);
+    renderizarLista(filtrados);
+  }
+
+  function buscarGlobal() {
+    const termo = document.getElementById('filtro').value.toLowerCase();
+    if (termo === "") {
+      selecionarCategoria(categoriaAtual);
+      return;
+    }
+
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('categoria-titulo').innerText = "Resultados";
+
+    const resultados = dadosCompletos.filter(i => 
+      i.nome.toLowerCase().includes(termo) || 
+      i.categoria.toLowerCase().includes(termo)
+    );
+    renderizarLista(resultados);
+  }
+
+  function renderizarLista(itens) {
+    const lista = document.getElementById('lista-produtos');
+    if (itens.length === 0) {
+      lista.innerHTML = '<div class="text-center mt-5 text-muted"><i class="bi bi-search" style="font-size: 3rem; opacity: 0.2;"></i><p>Nenhum produto encontrado.</p></div>';
+      return;
+    }
+
+    lista.innerHTML = itens.map(item => {
+      const precoFormatado = item.preco.includes('R$') ? item.preco : 'R$ ' + item.preco;
+      // Link do WhatsApp pré-montado com o nome do produto
+      const linkZap = `https://wa.me/SEUNUMEROAQUI?text=Olá! Gostaria de pedir: ${item.nome}`;
+
+      return `
+        <a href="${linkZap}" target="_blank" class="product-card">
+          <div class="product-img">
+            <i class="bi bi-egg-fried"></i> 
+          </div>
+          <div class="product-info">
+            <small>${item.categoria}</small>
+            <h3>${item.nome}</h3>
+            <div class="price-tag">${precoFormatado}</div>
+          </div>
+          <div class="ms-auto text-muted">
+            <i class="bi bi-chevron-right"></i>
+          </div>
+        </a>
+      `;
+    }).join('');
+  }
+
+  carregarDados();
+</script>
+
+</body>
+</html>
