@@ -10,6 +10,33 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
   <style>
+
+    /* --- ESTILO DA TELA DE LOGIN --- */
+#login-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--cor-branco);
+  z-index: 9999; /* Fica na frente de tudo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 350px;
+  padding: 30px;
+  border: 5px solid var(--cor-preto);
+  background: white;
+  text-align: center;
+}
+
+.login-logo {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
     /* --- IDENTIDADE VISUAL ALVINEGRA (NINHO CAIPIRA) --- */
     :root {
       --cor-preto: #000000;
@@ -271,14 +298,43 @@
 </head>
 <body>
 
+    <!-- TELA DE LOGIN -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo"><i class="bi bi-egg-fill"></i></div>
+    <h4 class="fw-black text-uppercase mb-4">Acesso ao Sistema</h4>
+    
+    <div class="mb-3 text-start">
+      <label class="small fw-bold">QUEM ESTÁ ACESSANDO?</label>
+      <select id="user-select" class="form-select form-select-lg border-2 fw-bold">
+        <option value="">Selecione...</option>
+        <option value="fabricio">Fabricio Nunes de Oliveira</option>
+        <option value="mateus">Mateus Nunes de Oliveira</option>
+        <option value="maria">Maria Eduarda Oliveira</option>
+        <option value="claudio">Claudio Fabricio Nunes</option>
+      </select>
+    </div>
+
+    <div class="mb-4 text-start">
+      <label class="small fw-bold">SENHA</label>
+      <input type="password" id="user-pass" class="form-control form-control-lg border-2 fw-bold" placeholder="****">
+    </div>
+
+    <button class="btn btn-dark w-100 py-3 fw-bold text-uppercase" onclick="tentarLogin()">Entrar no Sistema</button>
+    <div id="login-erro" class="text-danger mt-3 small fw-bold" style="display:none;">Senha incorreta!</div>
+  </div>
+</div>
+
 <!-- CABEÇALHO TRIPLO FIXO -->
 <div class="fixed-top-container">
   <div class="admin-header">
-    <span class="fw-bold"><i class="bi bi-egg-fill"></i> NINHO CAIPIRA</span>
-    <div class="d-flex align-items-center gap-2">
-      <span id="relogio" style="font-family: monospace; font-weight: 900; font-size: 1.1rem;">00:00</span>
-    </div>
+  <span class="fw-bold"><i class="bi bi-egg-fill"></i> NINHO CAIPIRA</span>
+  <div class="d-flex align-items-center gap-3"> <!-- Aumentei o gap para 3 -->
+    <span id="relogio" style="font-family: monospace; font-weight: 900; font-size: 1.1rem;">00:00</span>
+    <!-- BOTÃO DE SAIR -->
+    <i class="bi bi-box-arrow-right" onclick="fazerLogout()" style="cursor:pointer; font-size: 1.2rem;"></i>
   </div>
+</div>
   
   <div class="nav-modos">
     <button class="btn-modo active" id="btn-venda" onclick="mudarModo('venda')">Venda Rápida</button>
@@ -446,7 +502,7 @@
   // ========================================================
   // CONFIGURAÇÕES DE INTEGRAÇÃO (LINKS DAS 4 ABAS)
   // ========================================================
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8vTBPhqnir4l8AUemB4cbcvnWXDIfiPQa8Db8RXpcjSd4QPmzYERZWzw-i6nEpZFe/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKgiDVHIhbJ9g9mzBaqLKWWrtcM4_CahbVerUAPTfT2nxoPTPy819mLGy0KnfXw2_V/exec';
   
   // Lista de Preços
   const URL_PRECOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQdhEU_7Gcle7PCUi0RYGTffJ9Lu07YC71BMSqnoZChIWrZODHYenLZJvhnP-SxJ5mVNQBSrNFEhcMT/pub?gid=1050685172&single=true&output=csv';
@@ -851,6 +907,92 @@ async function abrirHistoricoDestaque(nome) {
     document.getElementById('relogio').innerText = agora.getHours().toString().padStart(2,'0') + ":" + agora.getMinutes().toString().padStart(2,'0');
   }, 1000);
 
+  // CONFIGURAÇÃO DE USUÁRIOS (Você pode mudar as senhas aqui)
+// CONFIGURAÇÃO DE USUÁRIOS COM NOME COMPLETO
+const USUARIOS = {
+  "fabricio": { senha: "1109", nomeCompleto: "Fabricio Nunes de Oliveira" },
+  "mateus":   { senha: "1234", nomeCompleto: "Mateus Nunes de Oliveira" },
+  "maria":    { senha: "1234", nomeCompleto: "Maria Eduarda Oliveira" },
+  "claudio":  { senha: "1234", nomeCompleto: "Claudio Fabricio Nunes" }
+};
+
+let usuarioLogado = ""; // Aqui vamos guardar o Nome Completo
+
+function tentarLogin() {
+  const userKey = document.getElementById('user-select').value;
+  const pass = document.getElementById('user-pass').value;
+  const erro = document.getElementById('login-erro');
+
+  if (userKey && USUARIOS[userKey] && USUARIOS[userKey].senha === pass) {
+    usuarioLogado = USUARIOS[userKey].nomeCompleto;
+    
+    // NOVO: Salva na memória do navegador por tempo indeterminado
+    localStorage.setItem('vendedor_logado', usuarioLogado);
+    
+    document.getElementById('login-overlay').style.display = 'none';
+    document.querySelector('.admin-header .fw-bold').innerHTML = 
+      `<i class="bi bi-person-circle"></i> ${usuarioLogado.split(' ')[0]}`;
+    
+    console.log("Logado como:", usuarioLogado);
+  } else {
+    erro.style.display = 'block';
+    setTimeout(() => { erro.style.display = 'none'; }, 2000);
+  }
+}
+async function registrarVendaFinal(cliente, metodo) {
+    const totalVenda = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
+    const btn = event.target;
+    const originalText = btn.innerText;
+    
+    if(btn.tagName === "DIV") btn.innerText = "PROCESSANDO...";
+
+    try {
+      // Envia para o Script
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ 
+          cliente: cliente, 
+          itens: carrinho, 
+          total: totalVenda, 
+          pagamento: metodo,
+          vendedor: usuarioLogado // <--- ADICIONADO: Envia o Nome Completo do vendedor
+        })
+      });
+
+      if(confirm("PEDIDO REGISTRADO COM SUCESSO!\n\nDeseja enviar o recibo por WhatsApp?")) {
+        gerarReciboZap(cliente, metodo, totalVenda);
+      }
+
+      location.reload(); 
+    } catch(e) {
+      alert("Erro ao registrar venda. Verifique sua conexão.");
+      if(btn.tagName === "DIV") btn.innerText = originalText;
+    }
+}
+
+function verificarSessao() {
+  const salvo = localStorage.getItem('vendedor_logado');
+  if (salvo) {
+    usuarioLogado = salvo;
+    // Esconde o login automaticamente
+    document.getElementById('login-overlay').style.display = 'none';
+    // Atualiza o nome no topo
+    document.querySelector('.admin-header .fw-bold').innerHTML = 
+      `<i class="bi bi-person-circle"></i> ${usuarioLogado.split(' ')[0]}`;
+  }
+}
+
+function fazerLogout() {
+  if (confirm("Deseja sair do usuário atual?")) {
+    localStorage.removeItem('vendedor_logado'); // Limpa a memória
+    location.reload(); // Recarrega para mostrar a tela de login de novo
+  }
+}
+
+// Chame ela logo no final do seu script, junto com o carregarDadosIniciais
+verificarSessao();
+carregarDadosIniciais();
   // Inicialização
   carregarDadosIniciais();
 </script>
