@@ -306,24 +306,11 @@
 <!-- SEÇÃO: GERENCIAR MENSALISTAS -->
 <section id="section-comandas" class="view-section">
   <div class="p-3">
-    <div class="bg-white p-4 border mb-4 shadow-sm">
-      <h6 class="fw-bold mb-3 text-uppercase" style="letter-spacing: 1px;">Cadastrar Novo Mensalista</h6>
-      <div class="mb-2">
-        <label class="small fw-bold text-muted">NOME DO CLIENTE</label>
-        <input type="text" id="reg-nome" class="form-control fw-bold border-2" placeholder="EX: JOÃO DA SILVA">
-      </div>
-      <div class="row g-2 mb-3">
-        <div class="col-6">
-          <label class="small fw-bold text-muted">TELEFONE</label>
-          <input type="tel" id="reg-tel" class="form-control fw-bold border-2" placeholder="(00) 00000-0000">
-        </div>
-        <div class="col-6">
-          <label class="small fw-bold text-muted">ENDEREÇO</label>
-          <input type="text" id="reg-end" class="form-control fw-bold border-2" placeholder="RUA, NÚMERO">
-        </div>
-      </div>
-      <button class="btn btn-dark w-100 fw-bold py-3 text-uppercase" onclick="cadastrarMensalistaNoScript()">Salvar Cliente na Planilha</button>
-    </div>
+    
+    <!-- NOVO BOTÃO DE CADASTRO (Substituindo o formulário fixo) -->
+    <button class="btn btn-dark w-100 mb-4 py-3 fw-bold shadow-sm text-uppercase" data-bs-toggle="modal" data-bs-target="#modalCadastroCliente">
+      <i class="bi bi-person-plus-fill me-2"></i> Cadastrar Novo Mensalista
+    </button>
 
     <h6 class="fw-bold text-uppercase px-2 mb-3" style="letter-spacing: 1px;">Clientes Ativos (Toque para ver histórico)</h6>
     <div id="lista-clientes-gerenciamento">
@@ -425,12 +412,41 @@
   </div>
 </div>
 
+<!-- MODAL: FORMULÁRIO DE CADASTRO DE CLIENTE -->
+<div class="modal fade" id="modalCadastroCliente" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-black text-white">
+        <h6 class="modal-title fw-bold text-uppercase">Novo Mensalista</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="mb-3">
+          <label class="small fw-bold text-muted">NOME DO CLIENTE</label>
+          <input type="text" id="reg-nome" class="form-control fw-bold border-2" placeholder="EX: JOÃO DA SILVA">
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="small fw-bold text-muted">TELEFONE</label>
+            <input type="tel" id="reg-tel" class="form-control fw-bold border-2" placeholder="(00) 00000-0000">
+          </div>
+          <div class="col-6">
+            <label class="small fw-bold text-muted">ENDEREÇO</label>
+            <input type="text" id="reg-end" class="form-control fw-bold border-2" placeholder="RUA, NÚMERO">
+          </div>
+        </div>
+        <button class="btn btn-dark w-100 fw-bold py-3 text-uppercase" onclick="cadastrarMensalistaNoScript()">Salvar Cliente na Planilha</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   // ========================================================
   // CONFIGURAÇÕES DE INTEGRAÇÃO (LINKS DAS 4 ABAS)
   // ========================================================
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1eRX3Kc0MetLQ5n9TBvLrNAJq1QTxw3z5rDgSWp47lXxv8MFs9bDMHTzuAGKw7oH2/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8vTBPhqnir4l8AUemB4cbcvnWXDIfiPQa8Db8RXpcjSd4QPmzYERZWzw-i6nEpZFe/exec';
   
   // Lista de Preços
   const URL_PRECOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQdhEU_7Gcle7PCUi0RYGTffJ9Lu07YC71BMSqnoZChIWrZODHYenLZJvhnP-SxJ5mVNQBSrNFEhcMT/pub?gid=1050685172&single=true&output=csv';
@@ -454,41 +470,59 @@
   let itensExtratoAtivo = [];
 
   // 1. CARREGAMENTO INICIAL DE DADOS
-  async function carregarDadosIniciais() {
-    try {
-      // 1.1 Buscar Produtos (Lista de Preços)
-      const resP = await fetch(URL_PRECOS);
-      const csvP = await resP.text();
-      produtosDB = csvP.split('\n').slice(1).map((linha, i) => {
-        const col = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-        return { 
-          id: i, 
-          cat: col[0]?.replace(/"/g, '').trim(), 
-          nome: col[1]?.replace(/"/g, '').trim(), 
-          preco: limparEConverterPreco(col[2]) 
-        };
-      }).filter(p => p.nome);
+async function carregarDadosIniciais() {
+  try {
+    // 1. CARREGAR PRODUTOS (URL_PRECOS)
+    console.log("Buscando produtos...");
+    const resP = await fetch(URL_PRECOS + '&nocache=' + new Date().getTime());
+    const csvP = await resP.text();
+    
+    const linhasP = csvP.split(/\r?\n/).filter(l => l.trim() !== "");
+    produtosDB = linhasP.slice(1).map((linha, i) => {
+      const col = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+      return { 
+        id: i, 
+        cat: col[0]?.replace(/"/g, '').trim(), 
+        nome: col[1]?.replace(/"/g, '').trim(), 
+        preco: limparEConverterPreco(col[2]) 
+      };
+    }).filter(p => p.nome && p.cat);
 
-      // 1.2 Buscar Mensalistas Cadastrados
-      const resC = await fetch(URL_CLIENTES + '?nocache=' + new Date().getTime());
-      const csvC = await resC.text();
-      mensalistasDB = csvC.split('\n').slice(1).map(linha => {
-        const col = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-        return { 
-          nome: col[0]?.replace(/"/g, '').trim(), 
-          tel: col[1]?.replace(/"/g, '').trim(), 
-          end: col[2]?.replace(/"/g, '').trim() 
-        };
-      }).filter(m => m.nome);
+    console.log("Produtos carregados:", produtosDB.length);
 
-      renderizarCategorias();
-      renderizarListaGerenciamento();
-    } catch (e) { 
-      alert("Erro crítico ao carregar banco de dados da planilha. Verifique a publicação CSV."); 
+    // 2. CARREGAR MENSALISTAS (URL_CLIENTES)
+    console.log("Buscando mensalistas...");
+    const resC = await fetch(URL_CLIENTES + '&nocache=' + new Date().getTime());
+    const csvC = await resC.text();
+    
+    const linhasC = csvC.split(/\r?\n/).filter(l => l.trim() !== "");
+    mensalistasDB = linhasC.slice(1).map(linha => {
+      const col = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+      return { 
+        nome: col[0]?.replace(/"/g, '').trim(), 
+        tel: col[1]?.replace(/"/g, '').trim(), 
+        end: col[2]?.replace(/"/g, '').trim() 
+      };
+    }).filter(m => m.nome);
+
+    console.log("Mensalistas carregados:", mensalistasDB.length);
+
+    // 3. RENDERIZAR TUDO
+    renderizarCategorias();
+    renderizarListaGerenciamento();
+    
+    // Forçar a primeira categoria a aparecer se houver produtos
+    if (produtosDB.length > 0) {
+      const primeiraCat = [...new Set(produtosDB.map(p => p.cat))][0];
+      selecionarCat(primeiraCat);
     }
-  }
 
-  function limparEConverterPreco(texto) {
+  } catch (e) { 
+    console.error("Erro Geral:", e);
+    alert("Erro ao carregar dados. Verifique a conexão e se as planilhas estão publicadas."); 
+  }
+}
+function limparEConverterPreco(texto) {
     if(!texto) return 0;
     // Remove R$, espaços e troca vírgula por ponto para o JS entender como número
     let limpo = texto.toString().replace(/[^\d,.-]/g, '').replace(',', '.');
@@ -572,7 +606,7 @@
   }
 
   // 3. LOGICA DE MENSALISTAS E EXTRATOS
-  async function cadastrarMensalistaNoScript() {
+ async function cadastrarMensalistaNoScript() {
     const nome = document.getElementById('reg-nome').value.trim().toUpperCase();
     const tel = document.getElementById('reg-tel').value.trim();
     const end = document.getElementById('reg-end').value.trim();
@@ -580,6 +614,7 @@
     if(!nome) return alert("Por favor, informe o nome do cliente.");
 
     const btn = event.target;
+    const originalText = btn.innerText;
     btn.disabled = true;
     btn.innerText = "ENVIANDO...";
 
@@ -589,83 +624,118 @@
         mode: 'no-cors',
         body: JSON.stringify({ tipo: "CADASTRO_CLIENTE", nome, telefone: tel, endereco: end })
       });
-      alert("Cliente cadastrado com sucesso na planilha!");
-      location.reload();
+      
+      alert("Cliente cadastrado com sucesso!");
+      
+      // Fecha o modal automaticamente
+      const modalElement = document.getElementById('modalCadastroCliente');
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      modalInstance.hide();
+
+      location.reload(); 
     } catch(e) { 
       alert("Erro ao salvar. Verifique sua internet."); 
       btn.disabled = false;
-      btn.innerText = "SALVAR CLIENTE NA PLANILHA";
+      btn.innerText = originalText;
     }
+}
+function renderizarListaGerenciamento() {
+  const container = document.getElementById('lista-clientes-gerenciamento');
+  if (!container) return;
+
+  if (mensalistasDB.length === 0) {
+    container.innerHTML = `
+      <div class="text-center p-5 border rounded bg-white">
+        <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+        <p class="mt-2 fw-bold text-muted">Nenhum mensalista encontrado na planilha.</p>
+        <small>Verifique se a aba 'mensalistas' tem dados.</small>
+      </div>`;
+    return;
   }
 
-  function renderizarListaGerenciamento() {
-    const container = document.getElementById('lista-clientes-gerenciamento');
-    if(mensalistasDB.length === 0) {
-      container.innerHTML = `<div class="text-center p-5 text-muted">Nenhum mensalista cadastrado na planilha.</div>`;
-      return;
-    }
-    container.innerHTML = mensalistasDB.map(m => `
-      <div class="comanda-card" onclick="abrirHistoricoDestaque('${m.nome}')">
-        <div class="comanda-info">
-          <h4>${m.nome}</h4>
-          <p><i class="bi bi-telephone"></i> ${m.tel || 'Sem telefone'} | <i class="bi bi-geo-alt"></i> ${m.end || 'Sem endereço'}</p>
-        </div>
-        <i class="bi bi-chevron-right text-muted"></i>
+  container.innerHTML = mensalistasDB.map(m => `
+    <div class="comanda-card" onclick="abrirHistoricoDestaque('${m.nome}')">
+      <div class="comanda-info">
+        <h4>${m.nome}</h4>
+        <p>
+          <i class="bi bi-telephone"></i> ${m.tel || 'Sem telefone'} 
+          <span class="mx-2">|</span> 
+          <i class="bi bi-geo-alt"></i> ${m.end || 'Sem endereço'}
+        </p>
       </div>
-    `).join('');
-  }
+      <i class="bi bi-chevron-right text-muted"></i>
+    </div>
+  `).join('');
+}
+async function abrirHistoricoDestaque(nome) {
+  clienteExtratoAtivo = nome;
+  // Limpa e padroniza o nome para comparação
+  const nomeBusca = nome.trim().toUpperCase();
+  
+  document.getElementById('extrato-titulo').innerText = `EXTRATO: ${nomeBusca}`;
+  document.getElementById('corpo-extrato').innerHTML = `<tr><td colspan="4" class="text-center p-4"><div class="spinner-border spinner-border-sm"></div> Buscando no Log...</td></tr>`;
+  document.getElementById('extrato-total').innerText = "R$ 0,00";
+  
+  new bootstrap.Modal(document.getElementById('modalExtrato')).show();
 
-  async function abrirHistoricoDestaque(nome) {
-    clienteExtratoAtivo = nome;
-    document.getElementById('extrato-titulo').innerText = `EXTRATO DETALHADO: ${nome}`;
-    document.getElementById('corpo-extrato').innerHTML = `<tr><td colspan="4" class="text-center p-4"><div class="spinner-border spinner-border-sm"></div> Buscando compras no Log...</td></tr>`;
-    document.getElementById('extrato-total').innerText = "R$ 0,00";
+  try {
+    // Busca o log com cache buster para vir dados novos
+    const resLog = await fetch(URL_LOG + '&nocache=' + new Date().getTime());
+    const csvLog = await resLog.text();
     
-    new bootstrap.Modal(document.getElementById('modalExtrato')).show();
+    // Divide por linhas e remove linhas vazias
+    const linhasLog = csvLog.split(/\r?\n/).filter(l => l.trim() !== "");
+    
+    let htmlTabela = "";
+    totalExtratoAtivo = 0;
+    itensExtratoAtivo = [];
 
-    try {
-      // Busca o log de mensalistas (Aba log_mensalistas)
-      const resLog = await fetch(URL_LOG + '?c=' + new Date().getTime());
-      const csvLog = await resLog.text();
-      const linhasLog = csvLog.split('\n').slice(1);
+    // Pula o cabeçalho (i=1)
+    for (let i = 1; i < linhasLog.length; i++) {
+      // Divide as colunas respeitando aspas
+      const col = linhasLog[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
       
-      let htmlTabela = "";
-      totalExtratoAtivo = 0;
-      itensExtratoAtivo = [];
+      if (col.length < 5) continue; // Pula linhas mal formadas
 
-      linhasLog.forEach(linha => {
-        const col = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-        // Estrutura: A:HORA, B:CLIENTE, C:PRODUTO, D:QUANTIDADE, E:VALOR (Total da linha)
-        const logCliente = col[1]?.replace(/"/g, '').trim().toUpperCase();
-        
-        if(logCliente === nome.toUpperCase()) {
-          const logData = col[0]?.replace(/"/g, '');
-          const logProd = col[2]?.replace(/"/g, '');
-          const logQtd = col[3]?.replace(/"/g, '');
-          const logVlr = parseFloat(col[4]?.replace(/"/g, '').replace(',', '.')) || 0;
+      // Colunas: A:Hora, B:Cliente, C:Produto, D:Qtd, E:Valor Total
+      const logCliente = col[1]?.replace(/"/g, '').trim().toUpperCase();
+      
+      // COMPARAÇÃO SEGURA
+      if (logCliente === nomeBusca) {
+        const logData = col[0]?.replace(/"/g, '').trim();
+        const logProd = col[2]?.replace(/"/g, '').trim();
+        const logQtd  = col[3]?.replace(/"/g, '').trim();
+        const logVlr  = limparEConverterPreco(col[4]); // Usa a função de conversão que já temos
 
-          totalExtratoAtivo += logVlr;
-          itensExtratoAtivo.push({ data: logData, prod: logProd, qtd: logQtd, vlr: logVlr });
+        totalExtratoAtivo += logVlr;
+        itensExtratoAtivo.push({ data: logData, prod: logProd, qtd: logQtd, vlr: logVlr });
 
-          htmlTabela += `
-            <tr>
-              <td><small>${logData}</small></td>
-              <td class="fw-bold">${logProd}</td>
-              <td class="text-center">${logQtd}</td>
-              <td class="fw-bold text-end">R$ ${logVlr.toFixed(2)}</td>
-            </tr>
-          `;
-        }
-      });
-
-      document.getElementById('corpo-extrato').innerHTML = htmlTabela || `<tr><td colspan="4" class="text-center p-4 text-muted">Este cliente não possui compras pendentes no Log.</td></tr>`;
-      document.getElementById('extrato-total').innerText = `R$ ${totalExtratoAtivo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-
-    } catch(e) {
-      document.getElementById('corpo-extrato').innerHTML = `<tr><td colspan="4" class="text-center text-danger p-4">Erro ao conectar com o Log de Compras.</td></tr>`;
+        htmlTabela += `
+          <tr>
+            <td><small>${logData}</small></td>
+            <td class="fw-bold">${logProd}</td>
+            <td class="text-center">${logQtd}</td>
+            <td class="fw-bold text-end">R$ ${logVlr.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+          </tr>
+        `;
+      }
     }
-  }
 
+    if (itensExtratoAtivo.length > 0) {
+      document.getElementById('corpo-extrato').innerHTML = htmlTabela;
+    } else {
+      document.getElementById('corpo-extrato').innerHTML = `<tr><td colspan="4" class="text-center p-4 text-muted">Nenhuma compra encontrada para este nome no Log.</td></tr>`;
+    }
+    
+    document.getElementById('extrato-total').innerText = `R$ ${totalExtratoAtivo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+    console.log(`Encontrados ${itensExtratoAtivo.length} itens para ${nomeBusca}`);
+
+  } catch(e) {
+    console.error("Erro no extrato:", e);
+    document.getElementById('corpo-extrato').innerHTML = `<tr><td colspan="4" class="text-center text-danger p-4">Erro ao conectar com a planilha de Log.</td></tr>`;
+  }
+}
   // 4. FINALIZAÇÃO DE VENDA
   function processarAcaoPrincipal() {
     if(carrinho.length === 0) return alert("Adicione produtos ao carrinho primeiro!");
