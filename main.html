@@ -3,337 +3,786 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Ninho Caipira - Menu Digital</title>
+  <title>SISTEMA NINHO CAIPIRA - PDV & MENSALISTAS</title>
   
-  <!-- Fontes e Ícones -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Importação de Bibliotecas -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
   <style>
+    /* --- IDENTIDADE VISUAL ALVINEGRA (NINHO CAIPIRA) --- */
     :root {
-      --primary: #1b4332; /* Verde escuro colonial */
-      --secondary: #2d6a4f;
-      --accent: #ffb703; /* Amarelo gema/ouro */
-      --bg: #f8f9fa;
-      --text-dark: #212529;
-      --text-muted: #6c757d;
-      --white: #ffffff;
+      --cor-preto: #000000;
+      --cor-cinza-escuro: #1a1a1a;
+      --cor-cinza-medio: #333333;
+      --cor-cinza-claro: #f4f4f4;
+      --cor-branco: #ffffff;
+      --sombra: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     body { 
-      background-color: var(--bg); 
-      font-family: 'Poppins', sans-serif; 
-      color: var(--text-dark);
-      padding-bottom: 60px;
+      background-color: var(--cor-cinza-claro); 
+      font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; 
+      padding-top: 215px; /* Espaço para o cabeçalho triplo fixo */
+      margin-bottom: 150px; /* Espaço para o rodapé fixo */
+      user-select: none;
+      color: var(--cor-preto);
     }
 
-    /* Header Estilizado */
-    .app-header {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      padding: 40px 20px 60px;
-      text-align: center;
-      border-radius: 0 0 40px 40px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    
-    .app-header h1 {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin-bottom: 5px;
+    /* --- CABEÇALHO TRIPLO FIXO --- */
+    .fixed-top-container {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1030;
+      background: var(--cor-branco);
+      box-shadow: var(--sombra);
     }
 
-    /* Barra de Busca Flutuante */
-    .search-container {
-      margin-top: -30px;
-      padding: 0 25px;
-      margin-bottom: 25px;
+    .admin-header {
+      background: var(--cor-preto);
+      color: var(--cor-branco);
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--cor-cinza-medio);
     }
-    .search-wrapper {
-      position: relative;
-      max-width: 500px;
-      margin: 0 auto;
+
+    /* Navegação de Modos */
+    .nav-modos {
+      display: flex;
+      background: #eeeeee;
+      padding: 5px;
+      gap: 5px;
+      border-bottom: 1px solid #ddd;
     }
-    .search-input {
+    .btn-modo {
+      flex: 1;
       border: none;
-      border-radius: 50px;
-      padding: 15px 25px 15px 50px;
-      width: 100%;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      font-size: 1rem;
+      padding: 12px;
+      font-weight: 800;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      background: #ddd;
+      color: #666;
+      border-radius: 4px;
       transition: 0.3s;
     }
-    .search-input:focus {
-      outline: none;
-      box-shadow: 0 10px 25px rgba(27, 67, 50, 0.2);
+    .btn-modo.active {
+      background: var(--cor-preto);
+      color: var(--cor-branco);
     }
+
+    .search-box {
+      padding: 10px 15px 5px;
+      background: var(--cor-branco);
+    }
+    
+    .search-input {
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 10px 15px 10px 40px;
+      width: 100%;
+      font-weight: 700;
+      background: #fff;
+    }
+
     .search-icon {
       position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--primary);
+      left: 28px;
+      top: 24px;
+      color: #888;
     }
 
-    /* Categorias em Pílulas */
-    .category-nav {
+    /* Categorias */
+    .category-scroll {
       display: flex;
       overflow-x: auto;
-      white-space: nowrap;
-      padding: 5px 20px 20px;
-      gap: 10px;
+      padding: 10px 15px;
+      gap: 8px;
+      background: var(--cor-branco);
       scrollbar-width: none;
     }
-    .category-nav::-webkit-scrollbar { display: none; }
+    .category-scroll::-webkit-scrollbar { display: none; }
 
-    .cat-btn {
-      padding: 10px 22px;
-      border-radius: 50px;
-      border: none;
-      background: var(--white);
-      color: var(--secondary);
-      font-weight: 600;
-      font-size: 0.85rem;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-      transition: 0.3s;
-    }
-    .cat-btn.active {
-      background: var(--accent);
-      color: var(--primary);
-      transform: scale(1.05);
-    }
-
-    /* Cards de Produto Estilo Restaurante */
-    .product-card {
-      background: var(--white);
-      border-radius: 20px;
-      padding: 15px;
-      margin: 0 20px 15px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      border: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-      transition: 0.2s;
-      text-decoration: none;
-      color: inherit;
-    }
-    
-    .product-card:active {
-      transform: scale(0.97);
-      background: #fdfdfd;
-    }
-
-    .product-img {
-      width: 70px;
-      height: 70px;
-      background: #f0f0f0;
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: var(--secondary);
-    }
-
-    .product-info { flex: 1; }
-    
-    .product-info small {
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    
-    .product-info h3 {
-      font-size: 1.05rem;
-      margin: 2px 0 5px;
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    .price-tag {
+    .cat-pill {
+      padding: 8px 18px;
+      border-radius: 4px;
+      background: var(--cor-cinza-claro);
+      white-space: nowrap;
+      font-size: 0.75rem;
       font-weight: 800;
-      color: var(--secondary);
-      font-size: 1.1rem;
+      color: var(--cor-cinza-medio);
+      border: 1px solid #ddd;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .cat-pill.active {
+      background: var(--cor-preto);
+      color: var(--cor-branco);
+      border-color: var(--cor-preto);
     }
 
-    .section-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      padding: 10px 25px;
-      color: var(--primary);
+    /* --- ÁREAS DE CONTEÚDO --- */
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    /* Grade de Produtos */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 15px;
+      padding: 15px;
+    }
+    @media (max-width: 500px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    }
+
+    .product-btn {
+      background: var(--cor-branco);
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px 10px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+      min-height: 120px;
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      justify-content: center;
+      transition: 0.2s;
     }
-    
-    .section-title::after {
-      content: "";
-      flex: 1;
-      height: 2px;
-      background: #e0e0e0;
+    .product-btn:active { transform: scale(0.95); background: #f9f9f9; }
+    .product-btn h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; color: var(--cor-preto); }
+    .product-btn .price { font-weight: 900; font-size: 1.2rem; color: var(--cor-preto); }
+
+    /* Badge de Quantidade */
+    .qty-badge {
+      position: absolute;
+      top: -8px;
+      right: -5px;
+      background: var(--cor-preto);
+      color: var(--cor-branco);
+      font-weight: 900;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--cor-branco);
+      font-size: 0.8rem;
+      z-index: 5;
     }
 
-    /* WhatsApp Floating Button */
-    .btn-whatsapp {
+    /* --- LISTA DE MENSALISTAS NO GERENCIAMENTO --- */
+    .comanda-card {
+      background: var(--cor-branco);
+      border-left: 8px solid var(--cor-preto);
+      padding: 18px;
+      margin: 10px 15px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    .comanda-card:active { background: #f0f0f0; }
+    .comanda-info h4 { margin: 0; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; }
+    .comanda-info p { margin: 0; font-size: 0.8rem; color: #666; font-weight: 600; }
+
+    /* --- RODAPÉ DE FECHAMENTO --- */
+    .checkout-bar {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #25d366;
-      color: white;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
+      bottom: 0; left: 0; right: 0;
+      background: var(--cor-branco);
+      border-top: 4px solid var(--cor-preto);
+      padding: 15px 20px 25px;
+      z-index: 1040;
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 12px;
+    }
+    .total-label { font-size: 0.8rem; color: #666; font-weight: 800; text-transform: uppercase; }
+    .total-value { font-size: 2.4rem; font-weight: 900; color: var(--cor-preto); line-height: 1; letter-spacing: -1px; }
+
+    .btn-finish {
+      flex: 1;
+      background: var(--cor-preto);
+      color: var(--cor-branco);
+      border: none;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      padding: 16px;
+    }
+    .btn-trash {
+      width: 65px;
+      height: 65px;
+      border: 2px solid #ddd;
+      background: #fdfdfd;
+      color: var(--cor-preto);
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      z-index: 1000;
-      text-decoration: none;
+      font-size: 1.6rem;
     }
 
-    #loader { text-align: center; padding: 100px 0; color: var(--primary); }
+    /* Modais */
+    .modal-content { border-radius: 0; border: 5px solid var(--cor-preto); }
+    .modal-header { border-bottom: 2px solid #eee; }
+    .pay-opt {
+      border: 2px solid #eee; padding: 22px 10px; text-align: center;
+      font-weight: 800; cursor: pointer; text-transform: uppercase; margin-bottom: 5px;
+      transition: 0.2s;
+    }
+    .pay-opt:active { background: var(--cor-preto); color: var(--cor-branco); }
+
+    .list-mensalistas-opt {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .mensalista-item-select {
+      padding: 18px; border-bottom: 1px solid #eee; font-weight: 800;
+      text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between;
+    }
+    .mensalista-item-select:active { background: #000; color: #fff; }
+
+    /* Estilo do Extrato / Histórico */
+    .table-extrato { font-size: 0.85rem; }
+    .table-extrato thead th { 
+      background: #000; 
+      color: #fff; 
+      text-transform: uppercase; 
+      font-size: 0.75rem;
+      position: sticky;
+      top: 0;
+    }
+    .table-extrato tbody td { vertical-align: middle; }
   </style>
 </head>
 <body>
 
-<div class="app-header">
-  <h1 class="mb-0">Ninho Caipira</h1>
-  <p class="mb-0" style="opacity: 0.9; font-weight: 300;">O sabor da roça na sua mesa</p>
-</div>
+<!-- CABEÇALHO TRIPLO FIXO -->
+<div class="fixed-top-container">
+  <div class="admin-header">
+    <span class="fw-bold"><i class="bi bi-egg-fill"></i> NINHO CAIPIRA</span>
+    <div class="d-flex align-items-center gap-2">
+      <span id="relogio" style="font-family: monospace; font-weight: 900; font-size: 1.1rem;">00:00</span>
+    </div>
+  </div>
+  
+  <div class="nav-modos">
+    <button class="btn-modo active" id="btn-venda" onclick="mudarModo('venda')">Venda Rápida</button>
+    <button class="btn-modo" id="btn-comandas" onclick="mudarModo('comandas')">Gerenciar Mensalistas</button>
+  </div>
 
-<div class="search-container">
-  <div class="search-wrapper">
-    <i class="bi bi-search search-icon"></i>
-    <input type="text" id="filtro" class="search-input" placeholder="O que você procura hoje?" onkeyup="buscarGlobal()">
+  <div id="wrapper-busca-categorias">
+    <div class="search-box position-relative">
+      <i class="bi bi-search search-icon"></i>
+      <input type="text" id="filtro" class="search-input" placeholder="BUSCAR PRODUTO..." onkeyup="buscarGlobal()">
+    </div>
+    <div id="category-bar" class="category-scroll">
+      <!-- Gerado via JS dinamicamente -->
+    </div>
   </div>
 </div>
 
-<div id="category-bar" class="category-nav">
-  <!-- Categorias via JS -->
+<!-- SEÇÃO: VENDA RÁPIDA / PRODUTOS -->
+<section id="section-venda" class="view-section active">
+  <div id="lista-produtos" class="products-grid">
+    <!-- Produtos renderizados aqui -->
+  </div>
+</section>
+
+<!-- SEÇÃO: GERENCIAR MENSALISTAS -->
+<section id="section-comandas" class="view-section">
+  <div class="p-3">
+    <div class="bg-white p-4 border mb-4 shadow-sm">
+      <h6 class="fw-bold mb-3 text-uppercase" style="letter-spacing: 1px;">Cadastrar Novo Mensalista</h6>
+      <div class="mb-2">
+        <label class="small fw-bold text-muted">NOME DO CLIENTE</label>
+        <input type="text" id="reg-nome" class="form-control fw-bold border-2" placeholder="EX: JOÃO DA SILVA">
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="small fw-bold text-muted">TELEFONE</label>
+          <input type="tel" id="reg-tel" class="form-control fw-bold border-2" placeholder="(00) 00000-0000">
+        </div>
+        <div class="col-6">
+          <label class="small fw-bold text-muted">ENDEREÇO</label>
+          <input type="text" id="reg-end" class="form-control fw-bold border-2" placeholder="RUA, NÚMERO">
+        </div>
+      </div>
+      <button class="btn btn-dark w-100 fw-bold py-3 text-uppercase" onclick="cadastrarMensalistaNoScript()">Salvar Cliente na Planilha</button>
+    </div>
+
+    <h6 class="fw-bold text-uppercase px-2 mb-3" style="letter-spacing: 1px;">Clientes Ativos (Toque para ver histórico)</h6>
+    <div id="lista-clientes-gerenciamento">
+      <!-- Lista de mensalistas vindos da aba 'mensalistas' -->
+    </div>
+  </div>
+</section>
+
+<!-- RODAPÉ DE FECHAMENTO FIXO -->
+<div class="checkout-bar">
+  <div class="total-row">
+    <div>
+      <div class="total-label" id="label-contexto">VALOR TOTAL DO PEDIDO</div>
+      <div class="total-value" id="total-venda">R$ 0,00</div>
+    </div>
+    <div id="contagem-itens" class="badge bg-dark px-3 py-2" style="font-size: 0.9rem;">0 ITENS</div>
+  </div>
+  
+  <div class="d-flex gap-2">
+    <button class="btn-trash" onclick="limparContexto()" title="Limpar Pedido">
+      <i class="bi bi-trash3"></i>
+    </button>
+    <button id="btn-acao-principal" class="btn-finish" onclick="processarAcaoPrincipal()">
+      Fechar Venda
+    </button>
+  </div>
 </div>
 
-<div id="loader">
-  <div class="spinner-border" role="status"></div>
-  <p class="mt-2">Carregando delícias...</p>
+<!-- MODAL: ESCOLHER FORMA DE PAGAMENTO -->
+<div class="modal fade" id="modalPagamento" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body p-4 text-center">
+        <h5 class="fw-bold mb-4 text-uppercase">Escolha o Pagamento</h5>
+        <div class="row g-2">
+          <div class="col-6"><div class="pay-opt" onclick="fecharVendaRapida('Dinheiro')">Dinheiro</div></div>
+          <div class="col-6"><div class="pay-opt" onclick="fecharVendaRapida('Pix')">Pix</div></div>
+          <div class="col-6"><div class="pay-opt" onclick="fecharVendaRapida('Débito')">Débito</div></div>
+          <div class="col-6"><div class="pay-opt" onclick="fecharVendaRapida('Crédito')">Crédito</div></div>
+          <div class="col-12">
+            <div class="pay-opt bg-warning text-dark border-0 mt-2" onclick="abrirSelecaoMensalista()">
+              <i class="bi bi-person-fill-add"></i> LANÇAR NA CONTA (MENSALISTA)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div id="categoria-titulo" class="section-title"></div>
-<div id="lista-produtos"></div>
+<!-- MODAL: SELECIONAR QUAL MENSALISTA -->
+<div class="modal fade" id="modalEscolherMensalista" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-light"><h6 class="modal-title fw-bold">SELECIONE O CLIENTE</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body p-0">
+        <div id="lista-selecao-final" class="list-mensalistas-opt">
+          <!-- Lista de mensalistas para seleção -->
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-dark w-100 fw-bold" data-bs-dismiss="modal">CANCELAR</button></div>
+    </div>
+  </div>
+</div>
 
-<!-- Botão flutuante para contato direto -->
-<a href="https://wa.me/SEUNUMEROAQUI" class="btn-whatsapp" target="_blank">
-  <i class="bi bi-whatsapp"></i>
-</a>
+<!-- MODAL: EXTRATO / HISTÓRICO DETALHADO DO SITE -->
+<div class="modal fade" id="modalExtrato" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-black text-white rounded-0">
+        <h6 class="modal-title fw-bold text-uppercase" id="extrato-titulo">Extrato Detalhado</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped table-extrato mb-0">
+            <thead>
+              <tr>
+                <th>Data / Hora</th>
+                <th>Produto</th>
+                <th>Qtd</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-extrato">
+              <!-- Linhas do log_mensalistas via JS -->
+            </tbody>
+          </table>
+        </div>
+        <div class="p-4 bg-light text-end border-top d-flex justify-content-between align-items-center">
+          <span class="fw-bold text-muted text-uppercase small">Dívida Total Acumulada:</span>
+          <span class="h3 fw-black mb-0" id="extrato-total">R$ 0,00</span>
+        </div>
+      </div>
+      <div class="modal-footer bg-white">
+        <button class="btn btn-outline-dark fw-bold px-4" onclick="enviarZapExtrato()">ENVIAR POR WHATSAPP</button>
+      </div>
+    </div>
+  </div>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  let dadosCompletos = [];
-  let categorias = [];
-  let categoriaAtual = "";
-  const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQdhEU_7Gcle7PCUi0RYGTffJ9Lu07YC71BMSqnoZChIWrZODHYenLZJvhnP-SxJ5mVNQBSrNFEhcMT/pub?output=csv';
+  // ========================================================
+  // CONFIGURAÇÕES DE INTEGRAÇÃO (LINKS DAS 4 ABAS)
+  // ========================================================
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1eRX3Kc0MetLQ5n9TBvLrNAJq1QTxw3z5rDgSWp47lXxv8MFs9bDMHTzuAGKw7oH2/exec';
+  
+  // Lista de Preços
+  const URL_PRECOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQdhEU_7Gcle7PCUi0RYGTffJ9Lu07YC71BMSqnoZChIWrZODHYenLZJvhnP-SxJ5mVNQBSrNFEhcMT/pub?gid=1050685172&single=true&output=csv';
+  
+  // Vendas Avulsas (Apenas para fins de registro, o site lê log_mensalistas para extratos)
+  const URL_VENDAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQdhEU_7Gcle7PCUi0RYGTffJ9Lu07YC71BMSqnoZChIWrZODHYenLZJvhnP-SxJ5mVNQBSrNFEhcMT/pub?gid=727058755&single=true&output=csv';
+  
+  // Mensalistas (Cadastro de Nomes/Telefones)
+  const URL_CLIENTES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQdhEU_7Gcle7PCUi0RYGTffJ9Lu07YC71BMSqnoZChIWrZODHYenLZJvhnP-SxJ5mVNQBSrNFEhcMT/pub?gid=2010558825&single=true&output=csv';
+  
+  // Log Mensalistas (Onde ficam as compras "penduradas")
+  const URL_LOG = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQdhEU_7Gcle7PCUi0RYGTffJ9Lu07YC71BMSqnoZChIWrZODHYenLZJvhnP-SxJ5mVNQBSrNFEhcMT/pub?gid=1937035360&single=true&output=csv';
 
-  async function carregarDados() {
+  // VARIÁVEIS DE ESTADO
+  let produtosDB = [];
+  let mensalistasDB = [];
+  let carrinho = [];
+  let categoriaAtiva = "";
+  let clienteExtratoAtivo = "";
+  let totalExtratoAtivo = 0;
+  let itensExtratoAtivo = [];
+
+  // 1. CARREGAMENTO INICIAL DE DADOS
+  async function carregarDadosIniciais() {
     try {
-      const response = await fetch(URL_PLANILHA);
-      const csv = await response.text();
-      
-      // Tratamento básico para evitar erros com vírgulas dentro de aspas
-      const linhas = csv.split('\n').slice(1);
-      dadosCompletos = linhas.map(linha => {
+      // 1.1 Buscar Produtos (Lista de Preços)
+      const resP = await fetch(URL_PRECOS);
+      const csvP = await resP.text();
+      produtosDB = csvP.split('\n').slice(1).map((linha, i) => {
         const col = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-        return {
-          categoria: col[0]?.replace(/"/g, '').trim(),
-          nome: col[1]?.replace(/"/g, '').trim(),
-          preco: col[2]?.replace(/"/g, '').trim()
+        return { 
+          id: i, 
+          cat: col[0]?.replace(/"/g, '').trim(), 
+          nome: col[1]?.replace(/"/g, '').trim(), 
+          preco: limparEConverterPreco(col[2]) 
         };
-      }).filter(i => i.nome);
+      }).filter(p => p.nome);
 
-      categorias = [...new Set(dadosCompletos.map(i => i.categoria))];
-      
-      renderizarAbas();
-      if(categorias.length > 0) selecionarCategoria(categorias[0]);
-      
-      document.getElementById('loader').style.display = 'none';
-    } catch (err) {
-      document.getElementById('loader').innerHTML = "Erro ao carregar o cardápio. Verifique sua conexão.";
+      // 1.2 Buscar Mensalistas Cadastrados
+      const resC = await fetch(URL_CLIENTES + '?nocache=' + new Date().getTime());
+      const csvC = await resC.text();
+      mensalistasDB = csvC.split('\n').slice(1).map(linha => {
+        const col = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        return { 
+          nome: col[0]?.replace(/"/g, '').trim(), 
+          tel: col[1]?.replace(/"/g, '').trim(), 
+          end: col[2]?.replace(/"/g, '').trim() 
+        };
+      }).filter(m => m.nome);
+
+      renderizarCategorias();
+      renderizarListaGerenciamento();
+    } catch (e) { 
+      alert("Erro crítico ao carregar banco de dados da planilha. Verifique a publicação CSV."); 
     }
   }
 
-  function renderizarAbas() {
-    const bar = document.getElementById('category-bar');
-    bar.innerHTML = categorias.map(cat => `
-      <button class="cat-btn" onclick="selecionarCategoria('${cat}')" id="btn-${cat}">
-        ${cat}
-      </button>
+  function limparEConverterPreco(texto) {
+    if(!texto) return 0;
+    // Remove R$, espaços e troca vírgula por ponto para o JS entender como número
+    let limpo = texto.toString().replace(/[^\d,.-]/g, '').replace(',', '.');
+    return parseFloat(limpo) || 0;
+  }
+
+  // 2. LOGICA DA INTERFACE DE VENDA
+  function mudarModo(modo) {
+    document.querySelectorAll('.btn-modo, .view-section').forEach(el => el.classList.remove('active'));
+    if(modo === 'venda') {
+      document.getElementById('btn-venda').classList.add('active');
+      document.getElementById('section-venda').classList.add('active');
+      document.getElementById('wrapper-busca-categorias').style.display = 'block';
+    } else {
+      document.getElementById('btn-comandas').classList.add('active');
+      document.getElementById('section-comandas').classList.add('active');
+      document.getElementById('wrapper-busca-categorias').style.display = 'none';
+      renderizarListaGerenciamento(); // Atualiza a lista sempre que entra
+    }
+  }
+
+  function renderizarCategorias() {
+    const cats = [...new Set(produtosDB.map(p => p.cat))];
+    const container = document.getElementById('category-bar');
+    container.innerHTML = cats.map(c => `
+      <div class="cat-pill" id="cat-${c}" onclick="selecionarCat('${c}')">${c}</div>
+    `).join('');
+    if(cats.length > 0) selecionarCat(cats[0]);
+  }
+
+  function selecionarCat(cat) {
+    categoriaAtiva = cat;
+    document.getElementById('filtro').value = "";
+    document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+    const pilar = document.getElementById(`cat-${cat}`);
+    if(pilar) pilar.classList.add('active');
+    
+    filtrarProdutos(produtosDB.filter(p => p.cat === cat));
+  }
+
+  function filtrarProdutos(lista) {
+    const grid = document.getElementById('lista-produtos');
+    grid.innerHTML = lista.map(p => {
+      const itemNoCart = carrinho.find(i => i.id === p.id);
+      const qtd = itemNoCart ? itemNoCart.qtd : 0;
+      return `
+        <div class="product-btn" onclick="adicionarAoPedido(${p.id})">
+          <div class="qty-badge" id="badge-${p.id}" style="${qtd > 0 ? 'display:flex' : ''}">${qtd}</div>
+          <h3>${p.nome}</h3>
+          <span class="price">R$ ${p.preco.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+        </div>
+      `;
+    }).join('');
+    atualizarResumoCarrinho();
+  }
+
+  function adicionarAoPedido(id) {
+    const p = produtosDB.find(x => x.id === id);
+    const existente = carrinho.find(i => i.id === id);
+    if(existente) {
+      existente.qtd++;
+    } else {
+      carrinho.push({...p, qtd: 1});
+    }
+
+    // Atualiza badge visual imediatamente para performance
+    const badge = document.getElementById(`badge-${id}`);
+    if(badge) {
+      const novaQtd = carrinho.find(i => i.id === id).qtd;
+      badge.innerText = novaQtd;
+      badge.style.display = 'flex';
+    }
+    atualizarResumoCarrinho();
+  }
+
+  function atualizarResumoCarrinho() {
+    const total = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
+    const totalItens = carrinho.reduce((acc, i) => acc + i.qtd, 0);
+    document.getElementById('total-venda').innerText = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+    document.getElementById('contagem-itens').innerText = `${totalItens} ITENS`;
+  }
+
+  // 3. LOGICA DE MENSALISTAS E EXTRATOS
+  async function cadastrarMensalistaNoScript() {
+    const nome = document.getElementById('reg-nome').value.trim().toUpperCase();
+    const tel = document.getElementById('reg-tel').value.trim();
+    const end = document.getElementById('reg-end').value.trim();
+    
+    if(!nome) return alert("Por favor, informe o nome do cliente.");
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerText = "ENVIANDO...";
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ tipo: "CADASTRO_CLIENTE", nome, telefone: tel, endereco: end })
+      });
+      alert("Cliente cadastrado com sucesso na planilha!");
+      location.reload();
+    } catch(e) { 
+      alert("Erro ao salvar. Verifique sua internet."); 
+      btn.disabled = false;
+      btn.innerText = "SALVAR CLIENTE NA PLANILHA";
+    }
+  }
+
+  function renderizarListaGerenciamento() {
+    const container = document.getElementById('lista-clientes-gerenciamento');
+    if(mensalistasDB.length === 0) {
+      container.innerHTML = `<div class="text-center p-5 text-muted">Nenhum mensalista cadastrado na planilha.</div>`;
+      return;
+    }
+    container.innerHTML = mensalistasDB.map(m => `
+      <div class="comanda-card" onclick="abrirHistoricoDestaque('${m.nome}')">
+        <div class="comanda-info">
+          <h4>${m.nome}</h4>
+          <p><i class="bi bi-telephone"></i> ${m.tel || 'Sem telefone'} | <i class="bi bi-geo-alt"></i> ${m.end || 'Sem endereço'}</p>
+        </div>
+        <i class="bi bi-chevron-right text-muted"></i>
+      </div>
     `).join('');
   }
 
-  function selecionarCategoria(cat) {
-    categoriaAtual = cat;
-    document.getElementById('filtro').value = "";
+  async function abrirHistoricoDestaque(nome) {
+    clienteExtratoAtivo = nome;
+    document.getElementById('extrato-titulo').innerText = `EXTRATO DETALHADO: ${nome}`;
+    document.getElementById('corpo-extrato').innerHTML = `<tr><td colspan="4" class="text-center p-4"><div class="spinner-border spinner-border-sm"></div> Buscando compras no Log...</td></tr>`;
+    document.getElementById('extrato-total').innerText = "R$ 0,00";
     
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    const btnAtivo = document.getElementById(`btn-${cat}`);
-    if(btnAtivo) btnAtivo.classList.add('active');
+    new bootstrap.Modal(document.getElementById('modalExtrato')).show();
+
+    try {
+      // Busca o log de mensalistas (Aba log_mensalistas)
+      const resLog = await fetch(URL_LOG + '?c=' + new Date().getTime());
+      const csvLog = await resLog.text();
+      const linhasLog = csvLog.split('\n').slice(1);
+      
+      let htmlTabela = "";
+      totalExtratoAtivo = 0;
+      itensExtratoAtivo = [];
+
+      linhasLog.forEach(linha => {
+        const col = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        // Estrutura: A:HORA, B:CLIENTE, C:PRODUTO, D:QUANTIDADE, E:VALOR (Total da linha)
+        const logCliente = col[1]?.replace(/"/g, '').trim().toUpperCase();
+        
+        if(logCliente === nome.toUpperCase()) {
+          const logData = col[0]?.replace(/"/g, '');
+          const logProd = col[2]?.replace(/"/g, '');
+          const logQtd = col[3]?.replace(/"/g, '');
+          const logVlr = parseFloat(col[4]?.replace(/"/g, '').replace(',', '.')) || 0;
+
+          totalExtratoAtivo += logVlr;
+          itensExtratoAtivo.push({ data: logData, prod: logProd, qtd: logQtd, vlr: logVlr });
+
+          htmlTabela += `
+            <tr>
+              <td><small>${logData}</small></td>
+              <td class="fw-bold">${logProd}</td>
+              <td class="text-center">${logQtd}</td>
+              <td class="fw-bold text-end">R$ ${logVlr.toFixed(2)}</td>
+            </tr>
+          `;
+        }
+      });
+
+      document.getElementById('corpo-extrato').innerHTML = htmlTabela || `<tr><td colspan="4" class="text-center p-4 text-muted">Este cliente não possui compras pendentes no Log.</td></tr>`;
+      document.getElementById('extrato-total').innerText = `R$ ${totalExtratoAtivo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+    } catch(e) {
+      document.getElementById('corpo-extrato').innerHTML = `<tr><td colspan="4" class="text-center text-danger p-4">Erro ao conectar com o Log de Compras.</td></tr>`;
+    }
+  }
+
+  // 4. FINALIZAÇÃO DE VENDA
+  function processarAcaoPrincipal() {
+    if(carrinho.length === 0) return alert("Adicione produtos ao carrinho primeiro!");
+    new bootstrap.Modal(document.getElementById('modalPagamento')).show();
+  }
+
+  function abrirSelecaoMensalista() {
+    bootstrap.Modal.getInstance(document.getElementById('modalPagamento')).hide();
+    const container = document.getElementById('lista-selecao-final');
     
-    document.getElementById('categoria-titulo').innerText = cat;
-    const filtrados = dadosCompletos.filter(i => i.categoria === cat);
-    renderizarLista(filtrados);
+    if(mensalistasDB.length === 0) {
+      container.innerHTML = `<div class="p-4 text-center">Nenhum mensalista cadastrado na planilha para selecionar.</div>`;
+    } else {
+      container.innerHTML = mensalistasDB.map(m => `
+        <div class="mensalista-item-select" onclick="registrarVendaFinal('${m.nome}', 'Mensalista')">
+          <span>${m.nome}</span>
+          <i class="bi bi-chevron-right text-muted"></i>
+        </div>
+      `).join('');
+    }
+    new bootstrap.Modal(document.getElementById('modalEscolherMensalista')).show();
+  }
+
+  function fecharVendaRapida(metodo) {
+    registrarVendaFinal("AVULSO", metodo);
+  }
+
+  async function registrarVendaFinal(cliente, metodo) {
+    const totalVenda = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
+    const btn = event.target;
+    const originalText = btn.innerText;
+    
+    if(btn.tagName === "DIV") btn.innerText = "PROCESSANDO...";
+
+    try {
+      // Envia para o Script (que decide se vai para 'Vendas' ou 'log_mensalistas')
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ 
+          cliente: cliente, 
+          itens: carrinho, 
+          total: totalVenda, 
+          pagamento: metodo 
+        })
+      });
+
+      // Gera recibo WhatsApp se for Avulso (opcional)
+      if(confirm("PEDIDO REGISTRADO COM SUCESSO!\n\nDeseja enviar o recibo por WhatsApp?")) {
+        gerarReciboZap(cliente, metodo, totalVenda);
+      }
+
+      location.reload(); // Recarrega para limpar tudo e atualizar dados
+    } catch(e) {
+      alert("Erro ao registrar venda. Verifique sua conexão.");
+      if(btn.tagName === "DIV") btn.innerText = originalText;
+    }
+  }
+
+  // 5. UTILITÁRIOS (WHATSAPP, RELOGIO, BUSCA)
+  function gerarReciboZap(cliente, metodo, total) {
+    let msg = `*NINHO CAIPIRA - RECIBO*%0A`;
+    msg += `---------------------------%0A`;
+    msg += `*CLIENTE:* ${cliente}%0A`;
+    msg += `*PAGAMENTO:* ${metodo}%0A`;
+    msg += `---------------------------%0A`;
+    carrinho.forEach(i => {
+      msg += `${i.qtd}x ${i.nome} - R$ ${(i.preco * i.qtd).toFixed(2)}%0A`;
+    });
+    msg += `---------------------------%0A`;
+    msg += `*TOTAL: R$ ${total.toFixed(2)}*%0A`;
+    msg += `Obrigado pela preferência! 🥚🥚`;
+    
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+  }
+
+  function enviarZapExtrato() {
+    let msg = `*NINHO CAIPIRA - EXTRATO DE CONTA*%0A`;
+    msg += `*CLIENTE:* ${clienteExtratoAtivo}%0A`;
+    msg += `---------------------------%0A`;
+    itensExtratoAtivo.forEach(i => {
+      msg += `• ${i.data} | ${i.prod} (${i.qtd}x) - R$ ${i.vlr.toFixed(2)}%0A`;
+    });
+    msg += `---------------------------%0A`;
+    msg += `*TOTAL PENDENTE: R$ ${totalExtratoAtivo.toFixed(2)}*%0A`;
+    msg += `Para dúvidas, entre em contato.`;
+    
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+  }
+
+  function limparContexto() {
+    if(confirm("Deseja realmente cancelar e limpar este pedido?")) {
+      location.reload();
+    }
   }
 
   function buscarGlobal() {
     const termo = document.getElementById('filtro').value.toLowerCase();
-    if (termo === "") {
-      selecionarCategoria(categoriaAtual);
+    if(termo === "") {
+      selecionarCat(categoriaAtiva);
       return;
     }
-
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('categoria-titulo').innerText = "Resultados";
-
-    const resultados = dadosCompletos.filter(i => 
-      i.nome.toLowerCase().includes(termo) || 
-      i.categoria.toLowerCase().includes(termo)
-    );
-    renderizarLista(resultados);
+    // Remove as abas ativas visualmente durante a busca global
+    document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+    
+    const resultados = produtosDB.filter(p => p.nome.toLowerCase().includes(termo));
+    filtrarProdutos(resultados);
   }
 
-  function renderizarLista(itens) {
-    const lista = document.getElementById('lista-produtos');
-    if (itens.length === 0) {
-      lista.innerHTML = '<div class="text-center mt-5 text-muted"><i class="bi bi-search" style="font-size: 3rem; opacity: 0.2;"></i><p>Nenhum produto encontrado.</p></div>';
-      return;
-    }
+  // Relógio em tempo real
+  setInterval(() => {
+    const agora = new Date();
+    document.getElementById('relogio').innerText = agora.getHours().toString().padStart(2,'0') + ":" + agora.getMinutes().toString().padStart(2,'0');
+  }, 1000);
 
-    lista.innerHTML = itens.map(item => {
-      const precoFormatado = item.preco.includes('R$') ? item.preco : 'R$ ' + item.preco;
-      // Link do WhatsApp pré-montado com o nome do produto
-      const linkZap = `https://wa.me/SEUNUMEROAQUI?text=Olá! Gostaria de pedir: ${item.nome}`;
-
-      return `
-        <a href="${linkZap}" target="_blank" class="product-card">
-          <div class="product-img">
-            <i class="bi bi-egg-fried"></i> 
-          </div>
-          <div class="product-info">
-            <small>${item.categoria}</small>
-            <h3>${item.nome}</h3>
-            <div class="price-tag">${precoFormatado}</div>
-          </div>
-          <div class="ms-auto text-muted">
-            <i class="bi bi-chevron-right"></i>
-          </div>
-        </a>
-      `;
-    }).join('');
-  }
-
-  carregarDados();
+  // Inicialização
+  carregarDadosIniciais();
 </script>
 
 </body>
